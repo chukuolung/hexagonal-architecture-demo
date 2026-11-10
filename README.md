@@ -1,6 +1,6 @@
 # DDD Hexagonal Architecture 專案
 
-這是一個基於 **Domain Driven Design (DDD)** 和 **Hexagonal Architecture (六角形架構)** 的 Java 後端專案實作。
+這是一個基於 **Domain Driven Design (DDD)** 和 **Hexagonal Architecture (六角架構)** 的 Java 後端專案實作。
 
 ## 📋 專案概述
 
@@ -13,13 +13,13 @@
 - **聚合根 (Aggregate Root)**: User 作為聚合根，管理內部實體
 - **值物件 (Value Objects)**: Email, UserId 等不可變的值物件
 - **領域事件 (Domain Events)**: UserCreated, UserEmailChanged 等事件
-- **領域例外 (Domain Exceptions)**: 自定義的業務例外
+- **領域例外 (Domain Exceptions)**: 自訂的業務例外
 
-### Hexagonal Architecture (六角形架構)
-- **主要端口 (Primary Ports)**: 定義應用程式用例介面
-- **次要端口 (Secondary Ports)**: 定義外部系統介面
-- **主要適配器 (Primary Adapters)**: Web 控制器等入口點
-- **次要適配器 (Secondary Adapters)**: 資料庫、外部服務等實作
+### Hexagonal Architecture (六角架構)
+- **主要埠 (Primary Ports)**: 定義應用程式使用案例介面
+- **次要埠 (Secondary Ports)**: 定義外部系統介面
+- **主要轉接器 (Primary Adapters)**: Web 控制器等入口點
+- **次要轉接器 (Secondary Adapters)**: 資料庫、外部服務等實作
 
 ## 📁 專案結構
 
@@ -31,9 +31,9 @@ src/main/java/com/example/ddd/
 │   │       ├── User.java           # 聚合根
 │   │       ├── UserId.java         # 值物件
 │   │       └── Email.java          # 值物件
-│   ├── ports/                       # 領域端口
-│   │   └── UserRepository.java     # 儲存庫介面
-│   ├── events/                      # 領域事件
+│   ├── ports/                       # 領域埠
+│   │   └── UserRepository.java     # 倉儲介面
+│   ├── event/                       # 領域事件
 │   │   ├── DomainEvent.java        # 事件基礎介面
 │   │   ├── UserCreated.java        # 使用者建立事件
 │   │   └── UserEmailChanged.java   # 電子郵件變更事件
@@ -42,16 +42,16 @@ src/main/java/com/example/ddd/
 │       ├── UserNotFoundException.java
 │       └── UserAlreadyExistsException.java
 ├── application/                     # 應用層
-│   ├── ports/                       # 應用端口
-│   │   ├── primary/                 # 主要端口 (用例)
+│   ├── ports/                       # 應用埠
+│   │   ├── primary/                 # 主要埠 (使用案例)
 │   │   │   ├── CreateUserPort.java
 │   │   │   ├── ChangeUserEmailPort.java
 │   │   │   ├── GetUserPort.java
 │   │   │   └── DeactivateUserPort.java
-│   │   └── secondary/               # 次要端口 (基礎設施)
+│   │   └── secondary/               # 次要埠 (基礎設施)
 │   │       ├── EmailNotificationPort.java
 │   │       └── EventPublisherPort.java
-│   ├── use_cases/                   # 用例實作
+│   ├── use_cases/                   # 使用案例實作
 │   │   ├── CreateUserUseCase.java
 │   │   ├── ChangeUserEmailUseCase.java
 │   │   ├── GetUserUseCase.java
@@ -66,21 +66,21 @@ src/main/java/com/example/ddd/
 │       ├── CreateUserResponse.java
 │       └── GetUserResponse.java
 ├── infrastructure/                   # 基礎設施層
-│   └── adapters/                    # 適配器
-│       ├── primary/                 # 主要適配器
-│       │   └── web/                 # Web 適配器
+│   └── adapters/                    # 轉接器
+│       ├── primary/                 # 主要轉接器
+│       │   └── web/                 # Web 轉接器
 │       │       └── UserController.java
-│       └── secondary/               # 次要適配器
-│           ├── sql/                 # SQL 適配器
+│       └── secondary/               # 次要轉接器
+│           ├── sql/                 # SQL 轉接器
 │           │   ├── SqlUserRepository.java
 │           │   ├── UserJpaRepository.java
 │           │   └── models/
 │           │       └── UserModel.java
-│           ├── memory/              # 記憶體適配器
+│           ├── memory/              # 記憶體轉接器
 │           │   └── InMemoryUserRepository.java
-│           ├── http/                # HTTP 適配器
+│           ├── http/                # HTTP 轉接器
 │           │   └── HttpEmailNotificationAdapter.java
-│           └── messaging/           # 訊息適配器
+│           └── messaging/           # 訊息轉接器
 │               └── InMemoryEventPublisher.java
 └── DddHexagonalApplication.java     # 主應用程式
 ```
@@ -171,19 +171,19 @@ mvn test -Dspring.profiles.active=test
 
 ### Hexagonal Architecture 原則
 
-1. **端口 (Ports)**
-   - 主要端口：定義應用程式用例
-   - 次要端口：定義外部系統介面
+1. **埠 (Ports)**
+   - 主要埠：定義應用程式使用案例
+   - 次要埠：定義外部系統介面
 
-2. **適配器 (Adapters)**
-   - 主要適配器：翻譯外部請求為領域命令
-   - 次要適配器：實作外部系統介面
+2. **轉接器 (Adapters)**
+   - 主要轉接器：翻譯外部請求為領域命令
+   - 次要轉接器：實作外部系統介面
 
-3. **依賴反轉**
-   - 領域層不依賴基礎設施
-   - 應用層依賴抽象而非具體實作
+3. **相依反轉**
+   - 領域層不相依於基礎設施
+   - 應用層相依於抽象而非具體實作
 
-## 🔧 技術棧
+## 🔧 技術堆疊
 
 - **Java 17**: 主要程式語言
 - **Spring Boot 3.2**: 應用程式框架
@@ -241,15 +241,15 @@ mvn test -Dspring.profiles.active=test
 - 撰寫完整的測試
 
 ### 架構設計
-- 清晰的層次分離
-- 依賴反轉原則
+- 清楚的分層
+- 相依反轉原則
 - 單一職責原則
 - 開放封閉原則
 
 ### 業務邏輯
 - 領域邏輯集中在領域層
 - 避免貧血模型
-- 使用領域事件進行鬆耦合
+- 使用領域事件達成鬆散耦合
 - 適當的例外處理
 
 ## 🤝 貢獻
